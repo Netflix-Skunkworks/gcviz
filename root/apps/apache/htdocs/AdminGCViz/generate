@@ -1,0 +1,206 @@
+#!/bin/bash
+
+# $Id: //depot/cloud/rpms/nflx-webadmin-gcviz/root/apps/apache/htdocs/AdminGCViz/generate#3 $
+# $DateTime: 2013/05/15 18:34:23 $
+# $Author: mooreb $
+# $Change: 1838706 $
+
+if [[ "POST" != "${REQUEST_METHOD}" ]] ; then
+    cat <<END_OF_405
+Status: 405 Method Not Allowed
+Content-type: text/html
+
+<HTML>
+<HEAD><TITLE>405 Method Not Allowed</TITLE></HEAD>
+<BODY>
+  <H1>Error</H1>
+  <P>generate cannot be called with anything but a POST</P>
+</BODY>
+</HTML>
+END_OF_405
+        exit 0;
+fi
+
+###############################################################################################################################################
+## 
+## lifted from http://oinkzwurgl.org/bash_cgi thank you Philippe 
+## 
+# (internal) routine to store POST data
+function cgi_get_POST_vars()
+{
+    # check content type
+    # FIXME: not sure if we could handle uploads with this..
+    [ "${CONTENT_TYPE}" != "application/x-www-form-urlencoded" ] && \
+    echo "bash.cgi warning: you should probably use MIME type "\
+         "application/x-www-form-urlencoded!" 1>&2
+    # save POST variables (only first time this is called)
+    [ -z "$QUERY_STRING_POST" \
+      -a "$REQUEST_METHOD" = "POST" -a ! -z "$CONTENT_LENGTH" ] && \
+        read -n $CONTENT_LENGTH QUERY_STRING_POST
+    # prevent shell execution
+    local t
+    t=${QUERY_STRING_POST//%60//} # %60 = `
+    t=${t//\`//}
+    t=${t//\$(//}
+    QUERY_STRING_POST=${t}
+    return
+}
+
+# (internal) routine to decode urlencoded strings
+function cgi_decodevar()
+{
+    [ $# -ne 1 ] && return
+    local v t h
+    # replace all + with whitespace and append %%
+    t="${1//+/ }%%"
+    while [ ${#t} -gt 0 -a "${t}" != "%" ]; do
+    v="${v}${t%%\%*}" # digest up to the first %
+    t="${t#*%}"       # remove digested part
+    # decode if there is anything to decode and if not at end of string
+    if [ ${#t} -gt 0 -a "${t}" != "%" ]; then
+        h=${t:0:2} # save first two chars
+        t="${t:2}" # remove these
+        v="${v}"`echo -e \\\\x${h}` # convert hex to special char
+    fi
+    done
+    # return decoded string
+    echo "${v}"
+    return
+}
+
+# routine to get variables from http requests
+# usage: cgi_getvars method varname1 [.. varnameN]
+# method is either GET or POST or BOTH
+# the magic varible name ALL gets everything
+function cgi_getvars()
+{
+    [ $# -lt 2 ] && return
+    local q p k v s
+    # prevent shell execution
+    t=${QUERY_STRING//%60//} # %60 = `
+    t=${t//\`//}
+    t=${t//\$(//}
+    QUERY_STRING=${t}
+    # get query
+    case $1 in
+    GET)
+        [ ! -z "${QUERY_STRING}" ] && q="${QUERY_STRING}&"
+        ;;
+    POST)
+        cgi_get_POST_vars
+        [ ! -z "${QUERY_STRING_POST}" ] && q="${QUERY_STRING_POST}&"
+        ;;
+    BOTH)
+        [ ! -z "${QUERY_STRING}" ] && q="${QUERY_STRING}&"
+        cgi_get_POST_vars
+        [ ! -z "${QUERY_STRING_POST}" ] && q="${q}${QUERY_STRING_POST}&"
+        ;;
+    esac
+    shift
+    s=" $* "
+    # parse the query data
+    while [ ! -z "$q" ]; do
+    p="${q%%&*}"  # get first part of query string
+    k="${p%%=*}"  # get the key (variable name) from it
+    v="${p#*=}"   # get the value from it
+    q="${q#$p&*}" # strip first part from query string
+    # decode and evaluate var if requested
+    [ "$1" = "ALL" -o "${s/ $k /}" != "$s" ] && \
+        eval "$k=\"`cgi_decodevar \"$v\"`\""
+    done
+    return
+}
+
+cgi_getvars POST ALL
+
+##
+##
+##
+###############################################################################################################################################
+
+#cat <<END_OF_EARLY_RETURN
+#Status: 200 OK
+#Content-type: text/html
+#
+#<HTML>
+#<HEAD><TITLE>200 OK: early return</TITLE></HEAD>
+#<BODY>
+#jmap_histo_live is ${jmap_histo_live}
+#vms_refresh_events is ${vms_refresh_events}
+#</BODY>
+#</HTML>
+#END_OF_EARLY_RETURN
+#exit 0
+
+if [ -z "$jmap_histo_live" ]; then
+    jmap_histo_live="nojmap_histo_live"
+else
+    jmap_histo_live="jmap_histo_live"
+fi
+
+if [ -z "$vms_refresh_events" ]; then
+    vms_refresh_events="novms_refresh_events"
+else
+    vms_refresh_events="vms_refresh_events"
+fi
+
+
+NFENV=/etc/profile.d/netflix_environment.sh
+if [ -f ${NFENV} ]; then
+    . ${NFENV}
+else
+    NFENV=""
+fi
+
+cd `dirname $0`
+
+prog=`basename $0`
+
+cat <<EndOfHeader
+Content-Type: text/html
+
+<html>
+<head>
+ <title>AdminGCViz</title>
+</head>
+<body>
+EndOfHeader
+
+echo "<pre>"
+NOW=`date +%Y-%m-%dT%T`
+bash /apps/apache/htdocs/AdminGCViz/remote-data-collection/collect_remote_data.sh ${NOW} ${jmap_histo_live} ${vms_refresh_events}
+/usr/bin/python2.7 /apps/apache/htdocs/AdminGCViz/visualize-gc.py ${NOW} /mnt/logs/gc-reports/${NOW}
+
+
+if [ -n "${NFENV}" ]; then
+    GCREPORT=/mnt/logs/gc-reports/${NOW}.tar.gz 
+    S3LOCATION=s3://netflix.bulkdata.${NETFLIX_ENVIRONMENT}/gc-report-${NETFLIX_APP}-${NOW}.tar.gz
+    echo bundling up results on ${GCREPORT}
+    tar -C /mnt/logs/gc-reports -zcf ${GCREPORT} ${NOW}
+    echo copying gc report to ${S3LOCATION}
+    s3cp ${GCREPORT} ${S3LOCATION}
+fi
+
+echo
+echo java -version is:
+cat /mnt/logs/gc-reports/${NOW}/java-version
+echo
+
+echo
+echo java commandline is:
+cat /mnt/logs/gc-reports/${NOW}/cmdline
+echo
+
+echo starting to render gc events and heap size images:
+echo "</pre>"
+
+for fullpath in `ls /mnt/logs/gc-reports/${NOW}/*.png`;
+do
+    filename=`basename ${fullpath}`
+    echo "<img src=\"/AdminGCVizImages/${NOW}/${filename}\">"
+done
+
+cat <<EndOfFooter
+</body>
+</html>
+EndOfFooter

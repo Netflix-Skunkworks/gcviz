@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# $Id: //depot/cloud/rpms/nflx-webadmin-gcviz/root/apps/apache/htdocs/AdminGCViz/index#2 $
+# $DateTime: 2013/05/15 18:34:23 $
+# $Author: mooreb $
+# $Change: 1838706 $
+
+cd `dirname $0`
+
+prog=`basename $0`
+
+NFENV=/etc/profile.d/netflix_environment.sh
+if [ -f ${NFENV} ]; then
+    . ${NFENV}
+    NETFLIX_VMS_EVENTS=checked
+else
+    NFENV=""
+fi
+
+cat <<EndOfHeader
+Content-Type: text/html
+
+<html>
+<head>
+ <title>AdminGCViz</title>
+</head>
+<body>
+EndOfHeader
+
+cat <<EndOfGenerate
+Generate a GC visualization report now
+<form action="generate" method="POST">
+  <input type="checkbox" name="jmap_histo_live" value="on" checked> jmap -histo:live<br>
+  <input type="checkbox" name="vms_refresh_events" value="on" ${NETFLIX_VMS_EVENTS}> parse catalina logs looking for netflix VMS events<br>
+  <input type="submit" value="Generate GCViz report">
+</form>
+EndOfGenerate
+
+echo Look at previous reports
+echo "<ul>"
+for f in `find /mnt/logs/gc-reports -type f -name "*.png" | LANG=C sort -rn`;
+do
+    u=`echo ${f} | sed 's|/mnt/logs/gc-reports/||'`
+    echo "<li> <a href=\"/AdminGCVizImages/${u}\">${f}</a>"
+done
+echo "</ul>"
+
+
+cat <<EndOfFooter
+</body>
+</html>
+EndOfFooter

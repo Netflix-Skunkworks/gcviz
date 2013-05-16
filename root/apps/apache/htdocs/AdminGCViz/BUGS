@@ -1,0 +1,32 @@
+This is more of a todo list than things that are deeply wrong, but I want to make the fringes that I know about public.
+
+* all of the BUGs and Potential BUGs in all of the sources
+* visualize-cluster does not work
+* compute throughput, allocation rate from gc data (do this with PrintGCStats?)
+* sar data (cpu, etc) needs to be visualized
+
+
+
+* netflix internal: need to visualize facet data
+* netflix internal: need to ensure that clients output vms cache refresh event overall and facet-level timing
+    * gps
+    * api
+    * merchweb
+    * ecweb (curently no facet-level timing for demand-fill)
+    * accountweb (curently no facet-level timing for demand-fill)
+    * ...
+* netflix-internal: delta fail needs to be added to catalina parsing (right now all lines are plotted as begin/end overall)
+* netflix-internal, maybe outside too: truncated gc logs (when ec2rotate logs purges stuff older than 7 days creates "unknown" gc events.
+* netflix-internal: have if -z checks for status-properties-1, -2. delete empty files. don't do both if we get the output for one. Consider getting URL from discovery/entrypoints.
+* netflix-internal: the squirreled away vms-gc-reports location is <appname>/<date>/<data> and doesn't have instance id in the path... This could be a problem for visualize-cluster.
+* netflix-internal: Consider grabbing some number of recent ttime and threaddump files from /apps/tomcat/logs/cores
+    drwxrwsr-x 2 root         nac   94208 Apr 17 23:44 .
+    -rw-r--r-- 1 merchwebprod nac  168050 Apr 17 23:44 ttime.20120417.234401.1586.txt
+    lrwxrwxrwx 1 merchwebprod nac      59 Apr 17 23:44 latest -> /apps/tomcat/logs/cores/threaddump.20120417.234401.1586.txt
+    -rw-r--r-- 1 merchwebprod nac 1117242 Apr 17 23:44 threaddump.20120417.234401.1586.txt
+    -rw-r--r-- 1 merchwebprod nac  168251 Apr 17 23:34 ttime.20120417.233401.1586.txt
+    -rw-r--r-- 1 merchwebprod nac 1119200 Apr 17 23:34 threaddump.20120417.233401.1586.txt
+    -rw-r--r-- 1 merchwebprod nac  168371 Apr 17 23:24 ttime.20120417.232401.1586.txt
+    -rw-r--r-- 1 merchwebprod nac 1120525 Apr 17 23:24 threaddump.20120417.232401.1586.txt
+    -rw-r--r-- 1 merchwebprod nac  168490 Apr 17 23:15 ttime.20120417.231401.1586.txt
+* netflix-internal: visualize objectCache lines in ${OUTPUTDIR}/vms-object-cache-stats

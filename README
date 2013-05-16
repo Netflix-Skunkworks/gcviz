@@ -1,0 +1,31 @@
+This is gcviz, a set of programs that help generate visualizations
+from gc.log, a log file that the HotSpot, a Java Virual Machine,
+writes when configured with the following flags:
+  -verbose:gc
+  -verbose:sizes
+  -Xloggc:/apps/tomcat/logs/gc.log
+  -XX:+PrintGCDetails
+  -XX:+PrintGCDateStamps
+  -XX:+PrintTenuringDistribution
+
+gcviz is intended to be used as a webapp when installed on the same
+host as tomcat, or any other Java web container. The gcviz program
+itself is served by apache httpd inside netflix, but could be served
+by any webserver that supports CGI. gcviz can also be used in 'remote'
+mode where the visualizer runs on local hardware but the log files are
+scraped from a remote tomcat.
+
+By default gcviz is available at:
+  http://127.0.0.1:8080/AdminGCViz/index
+
+Internally, gcviz is a bundle of four sorts of things:
+  * python programs that require matplotlib, numpy, pylab, etc.
+  * cgi scripts that invoke these python programs
+  * some minor assistive perl scripts
+  * very minor rpm infrastructure to package the previous things.
+
+I wrote gcviz to address challenges we face inside Netflix. If you
+feel that any changes you might propose could be helpful for Netflix
+or for the community at large, please write.
+
+Brian Moore

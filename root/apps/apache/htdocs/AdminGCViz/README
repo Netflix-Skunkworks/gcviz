@@ -1,0 +1,40 @@
+* This program is split into thee conceptual parts:
+  * a top-level "driver" (visualize-instance.sh and visualize-cluster.py)
+  * a remote data collection component (remote-data-collection/collect_remote_data.sh)
+  * a visualization component (visualize-gc.py)
+
+It's difficult to get a cross-platform visualization component, so I
+opted for python's matplotlib, which is cross platform and has a
+single-click installer available for windows, macintosh and linux.
+
+* To visialize the data you'lll need python's matplotlib. One
+  simple-to-install (and free) distribution that contains this is EPD:
+    http://www.enthought.com/repo/free/
+  This will (attempt) to patch your .profile equivalent to place itself first on your PATH.
+
+* A note about how GC events are parsed. This software does not, at
+  the time of this writing, use PrintGCFixup. Instead it uses the
+  -XX:+PrintGCDateStamps datetime stamps (if available, secs since vm
+  boot if not) as an anchor, and treats each of those things as an
+  event.
+
+In this context:
+2012-04-04T19:07:40.395+0000: 510958.888: [GC [1 CMS-initial-mark: 18431999K(18432000K)] 18939679K(29491200K), 0.5050890 secs] [Times: user=0.50 sys=0.00, real=0.50 secs]
+2012-04-04T19:07:40.903+0000: 510959.397: [CMS-concurrent-mark-start]
+2012-04-04T19:07:56.564+0000: 510975.058: [CMS-concurrent-mark: 15.410/15.661 secs] [Times: user=49.94 sys=1.89, real=15.66 secs]
+2012-04-04T19:07:56.565+0000: 510975.058: [CMS-concurrent-preclean-start]
+2012-04-04T19:08:23.054+0000: 511001.548: [Full GC 511001.549: [CMS2012-04-04T19:08:48.906+0000: 511027.400: [CMS-concurrent-preclean: 51.957/52.341 secs] [Times: user=76.72 sys=0.15, real=52.34 secs]
+ (concurrent mode failure): 18431999K->16174249K(18432000K), 106.0788490 secs] 29491199K->16174249K(29491200K), [CMS Perm : 69005K->69005K(115372K)], 106.0801410 secs] [Times: user=106.01 sys=0.00, real=106.06 secs]
+2012-04-04T19:10:09.150+0000: 511107.644: [GC [1 CMS-initial-mark: 16174249K(18432000K)] 16363184K(29491200K), 0.0263250 secs] [Times: user=0.02 sys=0.00, real=0.03 secs]
+
+GC events of this form:
+2012-04-04T19:08:23.054+0000: 511001.548: [Full GC 511001.549: [CMS2012-04-04T19:08:48.906+0000: 511027.400: [CMS-concurrent-preclean: 51.957/52.341 secs] [Times: user=76.72 sys=0.15, real=52.34 secs]
+ (concurrent mode failure): 18431999K->16174249K(18432000K), 106.0788490 secs] 29491199K->16174249K(29491200K), [CMS Perm : 69005K->69005K(115372K)], 106.0801410 secs] [Times: user=106.01 sys=0.00, real=106.06 secs]
+
+are represented as a Full GC requiring 106 seconds rather than the
+CMS-preclean part of ~52 seconds. I'm not sure if ~106 or 106-52 is
+the stop-the-world part, but at that long of a pause, I'm not entirely
+convinced that it matters. Bill Jackson votes that 106-52 is the stop
+the world part. He's probably right. I'm surprised that the preclean
+wasn't aborted.
+

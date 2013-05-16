@@ -1,0 +1,18 @@
+ParNew                            (stop-the-world)
+CMS-initial-mark                  (stop-the-world)
+CMS-concurrent-mark               (concurrent includes yields to other theads)
+CMS-concurrent-abortable-preclean (concurrent)
+CMS-concurrent-preclean           (concurrent)
+CMS-remark                        (stop the world)
+CMS-concurrent-sweep              (concurrent)
+CMS-concurrent-reset              (concurrent?)
+concurrent mode failure           (stop the world)
+promotion failed                  (stop the world)
+Full GC                           (stop the world)
+
+markers
+CMS-concurrent-mark-start
+CMS-concurrent-preclean-start
+CMS-concurrent-sweep-start
+CMS-concurrent-reset-start
+CMS-concurrent-abortable-preclean-start
