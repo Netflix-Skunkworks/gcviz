@@ -1,8 +1,8 @@
 #!/usr/bin/python2.7
 
-# $Id: //depot/cloud/rpms/nflx-webadmin-gcviz/root/apps/apache/htdocs/AdminGCViz/visualize-gc.py#4 $
-# $DateTime: 2013/05/15 18:34:23 $
-# $Change: 1838706 $
+# $Id: //depot/cloud/rpms/nflx-webadmin-gcviz/root/apps/apache/htdocs/AdminGCViz/visualize-gc.py#5 $
+# $DateTime: 2013/11/12 11:28:22 $
+# $Change: 2030147 $
 # $Author: mooreb $
 
 import numpy as np
@@ -58,15 +58,21 @@ event_to_symbol_and_color = {
 #   CMS-concurrent-abortable-preclean-start
 
 ## Read environmental information
-fullEnvDict = vmsgcvizutils.envFileAsDictionary(vmsGCReportDirectory + os.path.sep + 'env')
-smallEnvDict = {
-    'ec2PublicHostname' : fullEnvDict.get('EC2_PUBLIC_HOSTNAME', 'no-public-hostname'),
-    'instanceID'        : fullEnvDict.get('EC2_INSTANCE_ID', 'no-instance-id'),
-    'instanceType'      : fullEnvDict.get('EC2_INSTANCE_TYPE', 'no-instance-type'),
-    'appname'           : fullEnvDict.get('NETFLIX_APP', 'unknown-app'),
-    'asg'               : fullEnvDict.get('NETFLIX_AUTO_SCALE_GROUP', 'unknown-asg'),
-    'env'               : fullEnvDict.get('NETFLIX_ENVIRONMENT', 'unknown-env'),
-}
+def getSmallEnvDict():
+    try:
+        fullEnvDict = vmsgcvizutils.envFileAsDictionary(vmsGCReportDirectory + os.path.sep + 'env')
+    except:
+        pass
+    smallEnvDict = {
+        'ec2PublicHostname' : fullEnvDict.get('EC2_PUBLIC_HOSTNAME', 'no-public-hostname'),
+        'instanceID'        : fullEnvDict.get('EC2_INSTANCE_ID', 'no-instance-id'),
+        'instanceType'      : fullEnvDict.get('EC2_INSTANCE_TYPE', 'no-instance-type'),
+        'appname'           : fullEnvDict.get('NETFLIX_APP', 'unknown-app'),
+        'asg'               : fullEnvDict.get('NETFLIX_AUTO_SCALE_GROUP', 'unknown-asg'),
+        'env'               : fullEnvDict.get('NETFLIX_ENVIRONMENT', 'unknown-env'),
+    }
+    return smallEnvDict
+    
 
 ## Read GC event records, one file per type.
 # The gc event records have this format:
@@ -160,6 +166,7 @@ def try_to_draw_vms_cache_refresh_lines():
 try_to_draw_vms_cache_refresh_lines()
 
 # various chart options
+smallEnvDict = getSmallEnvDict()
 ax.set_title('gc events over time for %s %s %s %s %s %s' % (smallEnvDict['appname'], smallEnvDict['env'], smallEnvDict['ec2PublicHostname'], smallEnvDict['instanceID'], smallEnvDict['instanceType'], smallEnvDict['asg']))
 ax.grid(True)
 ax.set_xlabel('gc event start timestamp')
