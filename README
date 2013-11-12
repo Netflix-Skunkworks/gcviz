@@ -11,9 +11,8 @@ writes when configured with the following flags:
 gcviz is intended to be used as a webapp when installed on the same
 host as tomcat, or any other Java web container. The gcviz program
 itself is served by apache httpd inside netflix, but could be served
-by any webserver that supports CGI. gcviz can also be used in 'remote'
-mode where the visualizer runs on local hardware but the log files are
-scraped from a remote tomcat.
+by any webserver that supports CGI. gcviz implicitly assumes to
+be running in a linux environment.
 
 By default gcviz is available at:
   http://127.0.0.1:8080/AdminGCViz/index
