@@ -1,8 +1,8 @@
 #!/usr/bin/python2.7
 
-# $Id: //depot/cloud/rpms/nflx-webadmin-gcviz/root/apps/apache/htdocs/AdminGCViz/visualize-gc.py#5 $
-# $DateTime: 2013/11/12 11:28:22 $
-# $Change: 2030147 $
+# $Id: //depot/cloud/rpms/nflx-webadmin-gcviz/root/apps/apache/htdocs/AdminGCViz/visualize-gc.py#6 $
+# $DateTime: 2013/11/12 19:42:41 $
+# $Change: 2030932 $
 # $Author: mooreb $
 
 import numpy as np
@@ -62,7 +62,7 @@ def getSmallEnvDict():
     try:
         fullEnvDict = vmsgcvizutils.envFileAsDictionary(vmsGCReportDirectory + os.path.sep + 'env')
     except:
-        pass
+        fullEnvDict = {}
     smallEnvDict = {
         'ec2PublicHostname' : fullEnvDict.get('EC2_PUBLIC_HOSTNAME', 'no-public-hostname'),
         'instanceID'        : fullEnvDict.get('EC2_INSTANCE_ID', 'no-instance-id'),

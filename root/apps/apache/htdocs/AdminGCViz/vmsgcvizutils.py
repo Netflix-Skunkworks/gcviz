@@ -1,8 +1,8 @@
 #!/usr/bin/python2.7
 
-# $Id: //depot/cloud/rpms/nflx-webadmin-gcviz/root/apps/apache/htdocs/AdminGCViz/vmsgcvizutils.py#2 $
-# $DateTime: 2013/05/15 18:34:23 $
-# $Change: 1838706 $
+# $Id: //depot/cloud/rpms/nflx-webadmin-gcviz/root/apps/apache/htdocs/AdminGCViz/vmsgcvizutils.py#3 $
+# $DateTime: 2013/11/12 19:42:41 $
+# $Change: 2030932 $
 # $Author: mooreb $
 
 import calendar
@@ -45,6 +45,9 @@ def envFileAsDictionary(fname):
     fp = open(fname, 'r')
     for line in fp:
         line = line.rstrip('\r\n')
-        (k, v) = line.split('=', 1)
+        try:
+            (k, v) = line.split('=', 1)
+        except ValueError:
+            continue
         retval[k] = v
     return retval
