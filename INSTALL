@@ -1,0 +1,50 @@
+This document will attempt to describe installation of gcviz.
+
+This process is not entirely straightforward and assumes familiarity
+with your OS and webserver.
+
+The rest of this document assumes a *nix-style system and apache httpd.
+
+(1) Find the folder: root/apps/apache/htdocs/AdminGCViz
+
+(2) Copy this folder into your htdocs root. Assure the permissions are something like:
+
+# ls -l /apps/apache/htdocs/AdminGCViz/
+total 60
+-rw-r--r-- 1 youruser yourgroup  2299 Mar 10 00:12 BUGS
+-rw-r--r-- 1 youruser yourgroup   733 Mar 10 00:12 gc_event_types
+-rwxr-xr-x 1 youruser yourgroup  5353 Mar 10 00:12 generate
+-rwxr-xr-x 1 youruser yourgroup  1253 Mar 10 00:12 index
+-rw-r--r-- 1 youruser yourgroup  2866 Mar 10 00:12 README
+drwxr-xr-x 2 youruser yourgroup  4096 Mar 14 22:22 remote-data-collection
+-rwxr-xr-x 1 youruser yourgroup  1670 Mar 10 00:12 visualize-cluster.py
+-rwxr-xr-x 1 youruser yourgroup  3478 Mar 10 00:12 visualize-facets.py
+-rwxr-xr-x 1 youruser yourgroup 10463 Mar 10 00:12 visualize-gc.py
+-rwxr-xr-x 1 youruser yourgroup  4101 Mar 10 00:12 visualize-instance.sh
+-rwxr-xr-x 1 youruser yourgroup  2071 Mar 10 00:12 vmsgcvizutils.py
+
+ ls -l /apps/apache/htdocs/AdminGCViz/remote-data-collection/
+total 52
+-rwxr-xr-x 1 vmcsampleservertest nac 7776 Mar 10 00:12 collect_remote_data.sh
+-rwxr-xr-x 1 vmcsampleservertest nac  707 Mar 10 00:12 facet_events_by_country.sh
+-rwxr-xr-x 1 vmcsampleservertest nac  696 Mar 10 00:12 facet_events_by_type.sh
+-rwxr-xr-x 1 vmcsampleservertest nac 2209 Mar 10 00:12 gcdotlog_convert_relative_into_absolute_time.py
+-rwxr-xr-x 1 vmcsampleservertest nac 1177 Mar 10 00:12 gcdotlog_extract_sizes.pl
+-rwxr-xr-x 1 vmcsampleservertest nac 2524 Mar 10 00:12 gcdotlog_extract_time.pl
+-rwxr-xr-x 1 vmcsampleservertest nac 1554 Mar 10 00:12 gcdotlog_one_event_per_line.pl
+-rwxr-xr-x 1 vmcsampleservertest nac  703 Mar 10 00:12 gc_events_by_type.sh
+-rwxr-xr-x 1 vmcsampleservertest nac 1691 Mar 10 00:12 parse-proc-pid-maps.py
+-rwxr-xr-x 1 vmcsampleservertest nac  556 Mar 10 00:12 prepend_epoch.py
+-rwxr-xr-x 1 vmcsampleservertest nac 2778 Mar 10 00:12 process_vms_object_cache_stats.py
+-rwxr-xr-x 1 vmcsampleservertest nac 1792 Mar 10 00:12 vms_facet_info_transform.py
+
+(3) Find the config file: root/apps/apache/conf.d/admin_gc_viz.conf
+
+(4) Use the config file from (3) as a guide to configure your local
+apache. It is intended to be Include'able (in the apache sense) but
+please don't blindly include it without understanding what it does and
+how it interacts with your other apache configuration.
+
+ADDITIONAL NOTES
+  * you may need to ensure that the shebang line is correct for your environment. The shebang lines assume a netflix environment.
+  * the included rpm .spec file: conf/rpm.spec may be helpful to you; YMMV
