@@ -25,18 +25,18 @@ drwxr-xr-x 2 youruser yourgroup  4096 Mar 14 22:22 remote-data-collection
 
  ls -l /apps/apache/htdocs/AdminGCViz/remote-data-collection/
 total 52
--rwxr-xr-x 1 vmcsampleservertest nac 7776 Mar 10 00:12 collect_remote_data.sh
--rwxr-xr-x 1 vmcsampleservertest nac  707 Mar 10 00:12 facet_events_by_country.sh
--rwxr-xr-x 1 vmcsampleservertest nac  696 Mar 10 00:12 facet_events_by_type.sh
--rwxr-xr-x 1 vmcsampleservertest nac 2209 Mar 10 00:12 gcdotlog_convert_relative_into_absolute_time.py
--rwxr-xr-x 1 vmcsampleservertest nac 1177 Mar 10 00:12 gcdotlog_extract_sizes.pl
--rwxr-xr-x 1 vmcsampleservertest nac 2524 Mar 10 00:12 gcdotlog_extract_time.pl
--rwxr-xr-x 1 vmcsampleservertest nac 1554 Mar 10 00:12 gcdotlog_one_event_per_line.pl
--rwxr-xr-x 1 vmcsampleservertest nac  703 Mar 10 00:12 gc_events_by_type.sh
--rwxr-xr-x 1 vmcsampleservertest nac 1691 Mar 10 00:12 parse-proc-pid-maps.py
--rwxr-xr-x 1 vmcsampleservertest nac  556 Mar 10 00:12 prepend_epoch.py
--rwxr-xr-x 1 vmcsampleservertest nac 2778 Mar 10 00:12 process_vms_object_cache_stats.py
--rwxr-xr-x 1 vmcsampleservertest nac 1792 Mar 10 00:12 vms_facet_info_transform.py
+-rwxr-xr-x 1 youruser yourgroup 7776 Mar 10 00:12 collect_remote_data.sh
+-rwxr-xr-x 1 youruser yourgroup  707 Mar 10 00:12 facet_events_by_country.sh
+-rwxr-xr-x 1 youruser yourgroup  696 Mar 10 00:12 facet_events_by_type.sh
+-rwxr-xr-x 1 youruser yourgroup 2209 Mar 10 00:12 gcdotlog_convert_relative_into_absolute_time.py
+-rwxr-xr-x 1 youruser yourgroup 1177 Mar 10 00:12 gcdotlog_extract_sizes.pl
+-rwxr-xr-x 1 youruser yourgroup 2524 Mar 10 00:12 gcdotlog_extract_time.pl
+-rwxr-xr-x 1 youruser yourgroup 1554 Mar 10 00:12 gcdotlog_one_event_per_line.pl
+-rwxr-xr-x 1 youruser yourgroup  703 Mar 10 00:12 gc_events_by_type.sh
+-rwxr-xr-x 1 youruser yourgroup 1691 Mar 10 00:12 parse-proc-pid-maps.py
+-rwxr-xr-x 1 youruser yourgroup  556 Mar 10 00:12 prepend_epoch.py
+-rwxr-xr-x 1 youruser yourgroup 2778 Mar 10 00:12 process_vms_object_cache_stats.py
+-rwxr-xr-x 1 youruser yourgroup 1792 Mar 10 00:12 vms_facet_info_transform.py
 
 (3) Find the config file: root/apps/apache/conf.d/admin_gc_viz.conf
 
