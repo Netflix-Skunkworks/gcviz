@@ -1,3 +1,11 @@
+# Deprecation Note
+
+Gcviz is no longer maintained and should be considered archived.
+
+Note that gcviz code is not intended to be deployed on untrusted networks, or without external authentication and authorization. Specifically, it  has functionality that can allow execution of system commands by remote users.
+
+# Original README
+
 This is gcviz, a set of programs that help generate visualizations
 from gc.log, a log file that the HotSpot, a Java Virual Machine,
 writes when configured with the following flags:
